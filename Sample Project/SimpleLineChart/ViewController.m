@@ -41,7 +41,12 @@
     };
     
     // Apply the gradient to the bottom portion of the graph
-    self.myGraph.gradientBottom = CGGradientCreateWithColorComponents(colorspace, components, locations, num_locations);
+    CGGradientRef gradientBottom = CGGradientCreateWithColorComponents(colorspace, components, locations, num_locations);
+    self.myGraph.gradientBottom = gradientBottom;
+    CGColorSpaceRelease(colorspace);
+    colorspace = nil;
+    CGGradientRelease(gradientBottom);
+    gradientBottom = nil;
     
     // Enable and disable various graph properties and axis displays
     self.myGraph.enableTouchReport = YES;

@@ -122,7 +122,31 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
 
 @implementation BEMSimpleLineGraphView
 
-#pragma mark - Initialization
+#pragma mark - Properties
+
+- (void)setGradientBottom:(CGGradientRef)gradientBottom {
+    if (_gradientBottom) {
+        CGGradientRelease(_gradientBottom);
+        _gradientBottom=nil;
+    }
+    if (gradientBottom) {
+        CGGradientRetain(gradientBottom);
+        _gradientBottom=gradientBottom;
+    }
+}
+
+- (void)setGradientTop:(CGGradientRef)gradientTop {
+    if (_gradientTop) {
+        CGGradientRelease(_gradientTop);
+        _gradientTop=nil;
+    }
+    if (gradientTop) {
+        CGGradientRetain(gradientTop);
+        _gradientTop=gradientTop;
+    }
+}
+
+#pragma mark - Life Cycle
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -213,29 +237,12 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
     [self drawEntireGraph];
 }
 
-- (void)drawGraph {
-    // Let the delegate know that the graph began layout updates
-    if ([self.delegate respondsToSelector:@selector(lineGraphDidBeginLoading:)])
-        [self.delegate lineGraphDidBeginLoading:self];
-    
-    // Get the number of points in the graph
-    [self layoutNumberOfPoints];
-    
-    if (numberOfPoints <= 1) {
-        return;
-    } else {
-        // Draw the graph
-        [self drawEntireGraph];
-        
-        // Setup the touch report
-        [self layoutTouchReport];
-        
-        // Let the delegate know that the graph finished updates
-        if ([self.delegate respondsToSelector:@selector(lineGraphDidFinishLoading:)])
-            [self.delegate lineGraphDidFinishLoading:self];
-    }
-
+- (void)dealloc {
+    self.gradientBottom = nil;
+    self.gradientTop = nil;
 }
+
+#pragma mark - Layout
 
 - (void)layoutSubviews {
     [super layoutSubviews];
@@ -392,6 +399,30 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
 }
 
 #pragma mark - Drawing
+
+- (void)drawGraph {
+    // Let the delegate know that the graph began layout updates
+    if ([self.delegate respondsToSelector:@selector(lineGraphDidBeginLoading:)])
+        [self.delegate lineGraphDidBeginLoading:self];
+    
+    // Get the number of points in the graph
+    [self layoutNumberOfPoints];
+    
+    if (numberOfPoints <= 1) {
+        return;
+    } else {
+        // Draw the graph
+        [self drawEntireGraph];
+        
+        // Setup the touch report
+        [self layoutTouchReport];
+        
+        // Let the delegate know that the graph finished updates
+        if ([self.delegate respondsToSelector:@selector(lineGraphDidFinishLoading:)])
+            [self.delegate lineGraphDidFinishLoading:self];
+    }
+    
+}
 
 - (void)didFinishDrawingIncludingYAxis:(BOOL)yAxisFinishedDrawing {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, self.animationGraphEntranceTime * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
@@ -785,7 +816,7 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
         if (idx == 0) {
             lastMatchIndex = 0;
         } else { // Skip first one
-            UILabel *prevLabel = [xAxisLabels objectAtIndex:lastMatchIndex];
+            UILabel *prevLabel = [self->xAxisLabels objectAtIndex:lastMatchIndex];
             CGRect r = CGRectIntersection(prevLabel.frame, label.frame);
             if (CGRectIsNull(r)) lastMatchIndex = idx;
             else [overlapLabels addObject:label]; // Overlapped
@@ -1030,7 +1061,7 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
         BOOL fullyContainsLabel = CGRectContainsRect(self.bounds, label.frame);
         if (!fullyContainsLabel) {
             [overlapLabels addObject:label];
-            [yAxisLabelPoints removeObject:@(label.center.y)];
+            [self->yAxisLabelPoints removeObject:@(label.center.y)];
         }
     }];
     
@@ -1356,7 +1387,7 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
         
         [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
             if (self.alwaysDisplayDots == NO && self.displayDotsOnly == NO) {
-                closestDot.alpha = 0;
+                self->closestDot.alpha = 0;
             }
             
             self.touchInputLine.alpha = 0;

@@ -233,10 +233,12 @@ IB_DESIGNABLE @interface BEMSimpleLineGraphView : UIView <UIGestureRecognizerDel
 /// Alpha of the bottom part of the graph (between the line and the X-axis).
 @property (nonatomic) IBInspectable CGFloat alphaBottom;
 
+NS_ASSUME_NONNULL_END
 
 /// Fill gradient of the bottom part of the graph (between the line and the X-axis). When set, it will draw a gradient over top of the fill provided by the \p colorBottom and \p alphaBottom properties.
 @property (assign, nonatomic) CGGradientRef gradientBottom;
 
+NS_ASSUME_NONNULL_BEGIN
 
 /// Color of the top part of the graph (between the line and the top of the view the graph is drawn in).
 @property (strong, nonatomic) IBInspectable UIColor *colorTop;
@@ -245,10 +247,12 @@ IB_DESIGNABLE @interface BEMSimpleLineGraphView : UIView <UIGestureRecognizerDel
 /// Alpha of the top part of the graph (between the line and the top of the view the graph is drawn in).
 @property (nonatomic) IBInspectable CGFloat alphaTop;
 
+NS_ASSUME_NONNULL_END
 
 /// Fill gradient of the top part of the graph (between the line and the top of the view the graph is drawn in). When set, it will draw a gradient over top of the fill provided by the \p colorTop and \p alphaTop properties.
 @property (assign, nonatomic) CGGradientRef gradientTop;
 
+NS_ASSUME_NONNULL_BEGIN
 
 /// Color of the line of the graph.
 @property (strong, nonatomic) IBInspectable UIColor *colorLine;
