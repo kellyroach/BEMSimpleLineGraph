@@ -39,6 +39,8 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
 
 #pragma mark BEMSimpleLineGraph Data Source
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-implementations"
 - (NSInteger)numberOfPointsInLineGraph:(BEMSimpleLineGraphView * __nonnull)graph {
     return numberOfPoints;
 }
@@ -50,6 +52,7 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
 - (NSString *)lineGraph:(nonnull BEMSimpleLineGraphView *)graph labelOnXAxisForIndex:(NSInteger)index {
     return xAxisLabelString;
 }
+#pragma clang diagnostic pop
 
 - (NSString *)popUpPrefixForlineGraph:(BEMSimpleLineGraphView * __nonnull)graph {
     return popUpPrefix;
